@@ -47,10 +47,29 @@ public class Movie {
 	 * 
 	 */
 	@Override
-	public boolean equals(Object other) {
-		// TODO: Implement this method correctly.
-		// TODO: Improve the specification for this method.
-		return false; // this should be changed
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Movie other = (Movie) obj;
+		if (id != other.id)
+			return false;
+		if (imdbUrl == null) {
+			if (other.imdbUrl != null)
+				return false;
+		} else if (!imdbUrl.equals(other.imdbUrl))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (releaseYear != other.releaseYear)
+			return false;
+		return true;
 	}
 	
 }
