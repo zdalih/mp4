@@ -53,7 +53,7 @@ public class MovieGraphTest {
 	 * @return Integer value of edge weight between the two movies
 	 * @throws IOException
 	 */
-	private int edgeWeight( Movie first, Movie second ) throws IOException {
+	public int edgeWeight( Movie first, Movie second ) throws IOException {
 		int firstID = first.hashCode(); //Hashcode returns a movie ID
 		int secondID = second.hashCode();
 		Set <Integer> firstLikerIds = new HashSet<Integer>();
