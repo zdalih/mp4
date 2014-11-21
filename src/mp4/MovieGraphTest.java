@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 
 // TODO: You should implement suitable JUnit tests to verify that your implementation of the MovieGraph class is correct.
@@ -42,11 +43,16 @@ import org.junit.Test;
  * 		-Test equality
  * 			-Equal
  * 			-hashcode
+ * 
+ * 		-Test edgeWeight
+ * 			-See if outputs are correct
  */
 
 public class MovieGraphTest {
+	
 	/**
-	 * Finds the edge weight between the first and second movie.
+	 * Finds the edge weight between the first and second movie
+	 * using a simple data sample.
 	 * 
 	 * @param first non-null Movie object
 	 * @param second non-null Movie object
@@ -67,7 +73,7 @@ public class MovieGraphTest {
 		int totalReviewers = 0;
 		int edgeWeight;
 		
-		RatingIterator iter2 = new RatingIterator("data/u.data.txt");
+		RatingIterator iter2 = new RatingIterator("data/u.simpleData.txt");
 		while (iter2.hasNext()) {
 			
 			Rating rating = iter2.getNext();
@@ -103,6 +109,9 @@ public class MovieGraphTest {
 			}		
 		}
 		
+		//Few tests to verify the operation of the edgeWeight
+		//With the simple case
+		
 		//To find the number of reviewers we can find the intersection 
 		//between the set of users who rated first movie and the set 
 		//of users who rated the second movie.
@@ -120,34 +129,173 @@ public class MovieGraphTest {
 		return edgeWeight;
 	}
 	
+	//A create a graph to test our path methods
+	private MovieGraph createGraph() throws IOException{
+		
+		MovieGraph completeGraph = new MovieGraph();
+		
+		Movie alphaMovie = new Movie(1,"alpha",2001,"www.alpha.com");
+		Movie betaMovie = new Movie(2,"beta",2002,"www.beta.com");
+		Movie charlieMovie = new Movie(3,"charlie",2003,"www.charlie.com");
+		Movie deltaMovie = new Movie(4,"delta",2004,"www.delta.com");
+		Movie echoMovie = new Movie(5,"echo",2005,"www.echo.com");
+		
+		completeGraph.addVertex(alphaMovie);
+		completeGraph.addVertex(betaMovie);
+		completeGraph.addVertex(charlieMovie);
+		completeGraph.addVertex(deltaMovie);
+		completeGraph.addVertex(echoMovie);
+		  
+		//adding all edges of the graph
+		completeGraph.addEdge(alphaMovie, betaMovie, edgeWeight(alphaMovie, betaMovie));
+		completeGraph.addEdge(alphaMovie, charlieMovie, edgeWeight(alphaMovie, charlieMovie));
+		completeGraph.addEdge(alphaMovie, deltaMovie, edgeWeight(alphaMovie, deltaMovie));
+		completeGraph.addEdge(alphaMovie, echoMovie, edgeWeight(alphaMovie, echoMovie));
+		completeGraph.addEdge(betaMovie, charlieMovie, edgeWeight(betaMovie, charlieMovie));
+		completeGraph.addEdge(betaMovie, deltaMovie, edgeWeight(betaMovie, deltaMovie));
+		completeGraph.addEdge(betaMovie, echoMovie, edgeWeight(betaMovie, echoMovie));
+		completeGraph.addEdge(charlieMovie, deltaMovie, edgeWeight(charlieMovie, deltaMovie));
+		completeGraph.addEdge(charlieMovie, echoMovie, edgeWeight(charlieMovie, echoMovie));
+		completeGraph.addEdge(deltaMovie, echoMovie, edgeWeight(deltaMovie, echoMovie));
+		
+		return completeGraph;
+	}
+	
+	//Movies to test or add vertex and edges
+	Movie alphaMovie = new Movie(1,"alpha",2001,"www.alpha.com");
+	Movie betaMovie = new Movie(2,"beta",2002,"www.beta.com");
+	Movie charlieMovie = new Movie(3,"charlie",2003,"www.charlie.com");
+	Movie deltaMovie = new Movie(4,"delta",2004,"www.delta.com");
+	Movie echoMovie = new Movie(5,"echo",2005,"www.echo.com");
+	
+	@Test
+	public void alphaBetaWeight() throws IOException{
+		int result = edgeWeight(alphaMovie,betaMovie);
+		int expected = 2;
+		assertEquals(result,expected);
+	}
+	
+	@Test
+	public void betaCharlieWeight() throws IOException{
+		int result = edgeWeight(betaMovie,charlieMovie);
+		int expected = 4;
+		assertEquals(result,expected);
+	}
+	
+	@Test public void alphaEchoWeight() throws IOException{
+		int result = edgeWeight(alphaMovie,echoMovie);
+		int expected = 1;
+		assertEquals(result,expected);
+	}
+	
 	@Test
 	public void addProperVertex() {
-		fail("Not yet implemented");
+		MovieGraph graph = new MovieGraph();
+		boolean result = graph.addVertex(alphaMovie);
+		
+		if(graph.movies.get(0).equals(alphaMovie)) //testing if the movie added is equal
+			assertTrue(result); //testing if the return is true
+		else
+			fail();
 	}
 	
 	@Test
 	public void addImporperVertex() {
-		fail("Not yet implemented");
+		MovieGraph graph = new MovieGraph();
+		graph.addVertex(alphaMovie); //Testing if adding the same movie twice will return false
+		assertFalse(graph.addVertex(alphaMovie));
 	}
 	
 	@Test
-	public void addProperMovieEdge() {
-		fail("Not yet implemented");
+	public void addProperMovieEdge() throws IOException{
+		MovieGraph graph = new MovieGraph();
+		graph.addVertex(alphaMovie);
+		graph.addVertex(charlieMovie);
+		
+		boolean result = graph.addEdge((Movie)alphaMovie,(Movie)charlieMovie, edgeWeight(alphaMovie,charlieMovie));
+		
+		if(graph.movies.get(0).equals(alphaMovie) && graph.movies.get(1).equals(charlieMovie)){
+			if( graph.weights.get(1).get(0) == edgeWeight(alphaMovie,charlieMovie))
+				assertTrue(result);
+		}
+		else
+			fail();
 	}
 	
 	@Test
-	public void addImproperMovieEdge() {
-		fail("Not yet implemented");
+	public void addImproperMovieEdge() throws IOException {
+		MovieGraph graph = new MovieGraph();
+		graph.addVertex(alphaMovie);
+		graph.addVertex(charlieMovie);
+		
+		graph.addEdge(alphaMovie,charlieMovie, edgeWeight(alphaMovie,charlieMovie));
+		boolean result = graph.addEdge(alphaMovie,charlieMovie, edgeWeight(alphaMovie,charlieMovie));
+		
+		assertFalse(result);
 	}
 	
 	@Test
-	public void addProperIntEdge() {
-		fail("Not yet implemented");
+	public void addProperIntEdge() throws IOException {
+		MovieGraph graph = new MovieGraph();
+		graph.addVertex(deltaMovie);
+		graph.addVertex(echoMovie);
+		
+		boolean result = graph.addEdge(deltaMovie.hashCode(),echoMovie.hashCode(), edgeWeight(deltaMovie,echoMovie));
+		
+		if(graph.movies.get(0).equals(deltaMovie) && graph.movies.get(1).equals(echoMovie)){
+			if( graph.weights.get(1).get(0) == edgeWeight(deltaMovie,echoMovie))
+				assertTrue(result);
+		}
+		else
+			fail();
 	}
 	
 	@Test
-	public void addImproperIntEdge() {
-		fail("Not yet implemented");
+	public void addImproperIntEdge() throws IOException {
+		MovieGraph graph = new MovieGraph();
+		graph.addVertex(alphaMovie);
+		graph.addVertex(betaMovie);
+		
+		graph.addEdge(alphaMovie.hashCode(),betaMovie.hashCode(), edgeWeight(alphaMovie,betaMovie));
+		boolean result = graph.addEdge(alphaMovie.hashCode(),betaMovie.hashCode(), edgeWeight(alphaMovie,betaMovie));
+		
+		assertFalse(result);
+	}
+	
+	@Test
+	public void getShortestPathLengthProperV1() throws NoSuchMovieException, NoPathException {
+		MovieGraph graph = new MovieGraph();
+		Movie A = new Movie(1, "A", 2010, "http:://www.imdb.com");
+		Movie B = new Movie(2, "B", 2010, "http:://www.imdb.com");
+		Movie C = new Movie(3, "C", 2010, "http:://www.imdb.com");
+		Movie D = new Movie(4, "D", 2010, "http:://www.imdb.com");
+		Movie E = new Movie(5, "E", 2010, "http:://www.imdb.com");
+		
+		graph.addVertex(A);
+		graph.addVertex(B);
+		graph.addVertex(C);
+		graph.addVertex(D);
+		graph.addVertex(E);
+		
+		graph.addEdge(A, B, 1);
+		graph.addEdge(B, C, 3);
+		graph.addEdge(C, D, 2);
+		graph.addEdge(C, E, 1);
+		graph.addEdge(A, C, 1);
+		graph.addEdge(A, E, 2);
+		
+		int result = graph.getShortestPathLength(2, 4);
+		ArrayList<Movie> path = new ArrayList<Movie>();
+		path = (ArrayList<Movie>) graph.getShortestPath(2, 4);
+		
+		String pathString =  new String("");
+		
+		
+		for(Movie M : path){
+			pathString += M.getName(); 
+		}
+		
+		System.out.println("length = " + result + "        path = " + pathString);
 	}
 	
 	@Test
@@ -156,13 +304,38 @@ public class MovieGraphTest {
 	}
 	
 	@Test
-	public void getShortestPathLengthNoPath() {
-		fail("Not yet implemented");
+	public void getShortestPathLengthNoPath() throws IOException {
+		fail(); //out of memory error
+		MovieGraph graph = new MovieGraph();
+		graph.addVertex(alphaMovie);
+		graph.addVertex(betaMovie);
+		graph.addVertex(charlieMovie);
+		
+		graph.addEdge(alphaMovie, betaMovie, edgeWeight(alphaMovie,betaMovie));
+	
+		try {
+			graph.getShortestPathLength(alphaMovie.hashCode(), charlieMovie.hashCode());
+			fail();
+		} catch (NoSuchMovieException e) {
+			fail();
+		} catch (NoPathException e) {
+			assertTrue(true);
+		}
+		
 	}
 	
 	@Test
 	public void getShortestPathLengthNoMovie() {
-		fail("Not yet implemented");
+		MovieGraph graph = new MovieGraph();
+		try {
+			graph.getShortestPathLength(alphaMovie.hashCode(), betaMovie.hashCode());
+			fail();
+		} catch (NoSuchMovieException e) {
+			assertTrue(true);
+		} catch (NoPathException e) {
+			fail();
+		}
+		
 	}
 	
 	@Test
@@ -171,13 +344,37 @@ public class MovieGraphTest {
 	}
 	
 	@Test
-	public void getShortestPathNoPath() {
-		fail("Not yet implemented");
+	public void getShortestPathNoPath() throws IOException {
+		fail();//out of memory error
+		MovieGraph graph = new MovieGraph();
+		graph.addVertex(alphaMovie);
+		graph.addVertex(betaMovie);
+		graph.addVertex(charlieMovie);
+		
+		graph.addEdge(alphaMovie, betaMovie, edgeWeight(alphaMovie,betaMovie));
+	
+		try {
+			graph.getShortestPath(alphaMovie.hashCode(), charlieMovie.hashCode());
+			fail();
+		} catch (NoSuchMovieException e) {
+			fail();
+		} catch (NoPathException e) {
+			assertTrue(true);
+		}
+	
 	}
 	
 	@Test
 	public void getShortestPathNoMovie() {
-		fail("Not yet implemented");
+		MovieGraph graph = new MovieGraph();
+		try {
+			graph.getShortestPathLength(alphaMovie.hashCode(), betaMovie.hashCode());
+			fail();
+		} catch (NoSuchMovieException e) {
+			assertTrue(true);
+		} catch (NoPathException e) {
+			fail();
+		}
 	}
 	
 	@Test
@@ -191,22 +388,34 @@ public class MovieGraphTest {
 	}
 	
 	@Test
-	public void equals() {
-		fail("Not yet implemented");
+	public void equals() throws IOException {
+		MovieGraph first = createGraph();
+		MovieGraph second = createGraph();
+		assertTrue(first.equals(second));
 	}
 	
 	@Test
-	public void notEquals() {
-		fail("Not yet implemented");
+	public void notEquals() throws IOException {
+		MovieGraph first = createGraph();
+		MovieGraph second = createGraph();
+		Movie additional = new Movie(1,"additional",2,"www.add.com");
+		second.addVertex(additional);
+		assertFalse(first.equals(second));
 	}
 	
 	@Test
-	public void hashcode() {
-		fail("Not yet implemented");
+	public void hashcode() throws IOException {
+		MovieGraph first = createGraph();
+		MovieGraph second = createGraph();
+		assertTrue(first.hashCode() == second.hashCode());
 	}
 	
 	@Test
-	public void notHashcode() {
-		fail("Not yet implemented");
+	public void notHashcode() throws IOException {
+		MovieGraph first = createGraph();
+		MovieGraph second = createGraph();
+		Movie additional = new Movie(1,"additional",2,"www.add.com");
+		second.addVertex(additional);
+		assertFalse(first.hashCode() == second.hashCode());
 	}
 }

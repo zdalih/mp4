@@ -53,6 +53,7 @@ public class MovieGraph {
 		
 		movies.add(movie);
 		graph.add(new ArrayList<Movie>());
+		weights.add(new ArrayList<Integer>());
 		
 		return true;
 	}
@@ -194,12 +195,12 @@ public class MovieGraph {
 		while (currentIndex != index2 && movies.size() > 0){
 			
 			//for the current index it updates all the distances
-			for(int I : weights.get(currentIndex)){
-				int vertexToUpdate = movies.indexOf(graph.get(currentIndex).get(I));
+			for(Movie M : graph.get(currentIndex)){
+				int vertexToUpdate = movies.indexOf(M);
 				
 				//if we have not yet visited the node
 				if(!visitedIndexes.contains(vertexToUpdate)){
-					int dist = distances[currentIndex]+weights.get(currentIndex).get(I);
+					int dist = distances[currentIndex]+weights.get(currentIndex).get(graph.get(currentIndex).indexOf(M));
 					
 					if(dist < distances[vertexToUpdate])
 						distances[vertexToUpdate] = dist;
@@ -291,12 +292,12 @@ public class MovieGraph {
 		while (currentIndex != index2 && count > 0){
 			
 			//for the current index it updates all the distances
-			for(int I : weights.get(currentIndex)){
-				int vertexToUpdate = movies.indexOf(graph.get(currentIndex).get(I));
+			for(Movie M : graph.get(currentIndex)){
+				int vertexToUpdate = movies.indexOf(M);
 				
 				//if we have not yet visited the node
 				if(!visitedIndexes.contains(vertexToUpdate)){
-					int dist = distances[currentIndex]+weights.get(currentIndex).get(I);
+					int dist = distances[currentIndex]+weights.get(currentIndex).get(graph.get(currentIndex).indexOf(M));
 					
 					if(dist < distances[vertexToUpdate])
 						distances[vertexToUpdate] = dist;
@@ -324,12 +325,39 @@ public class MovieGraph {
 			count--;
 		}
 		
-		//we have the list of visited indexes which we can convert to 
-		//a list of movies. 
+		//we sort the indexes and the distances with respect to the distance shortest distance
+		//and they must also be visited
 		
-		for(int I : visitedIndexes){
-			moviePath.add(movies.get(I));
+		int[] moviesIndexSorted = new int[visitedIndexes.size()];
+		int[] remaining = distances.clone();
+		int toAdd = 0;
+		
+		for(count = 0 ; count < visitedIndexes.size(); count++){
+			int min = Integer.MAX_VALUE;
+			
+			//find the smallest of the remaining
+			for(int index = 0; index < remaining.length; index++){
+				if(remaining[index] < min){
+					min = remaining[index];
+					toAdd = index;
+				}
+			}
+			
+			moviesIndexSorted[count] = toAdd;
+			
+			if(distances[count] == this.getShortestPathLength(movieId1, movieId2)){
+				moviesIndexSorted[count] = index2;
+				break;
+			}
+			
+			remaining[toAdd] = Integer.MAX_VALUE;
 		}
+		
+		
+		//we now convert this matrix into movie for
+		
+		for(int I : moviesIndexSorted)
+			moviePath.add(movies.get(I));
 		
 		return moviePath;
 
@@ -352,8 +380,31 @@ public class MovieGraph {
 	 *             if the name does not match any movie in the graph.
 	 */
 	public int getMovieId(String name) throws NoSuchMovieException {
-		// TODO: Implement this method
-		return 0;
+		int id = -1;
+		int max = 0;
+		
+		//checks for exact movie
+		for(Movie M : movies){
+			String currentName = M.getName();
+			if(name.equals(currentName))
+				id = currentName.hashCode();
+		}
+		
+		if(id != -1)
+			return id;
+		
+		//checks for title within in the movie
+		for(Movie M: movies){
+			String currentName = M.getName();
+			if(name.contains(name))
+				id = currentName.hashCode();
+				
+		}
+		
+		if(id != -1)
+			return id;
+		else 
+			throw new NoSuchMovieException();
 	}
 
 	// Implement the next two methods for completeness of the MovieGraph ADT
