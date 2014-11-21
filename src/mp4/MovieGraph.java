@@ -159,8 +159,83 @@ public class MovieGraph {
 	 */
 	public int getShortestPathLength(int moviedId1, int moviedId2)
 			throws NoSuchMovieException, NoPathException {
-		// TODO: Implement this method
-		return 0;
+		
+		int length = -1;
+		int index1 = -1;
+		int index2 = -1;
+		int[] distances = new int[movies.size()];
+		List<Integer> visitedIndexes = new ArrayList<Integer>();
+		
+		//get the index of the nodes for the IDs
+		for(int index = 0 ; index < movies.size(); index++){
+			if(movies.get(index).hashCode() == moviedId1)
+				index1 = index;
+			if(movies.get(index).hashCode() == moviedId2)
+				index2 = index;
+		}
+		
+		//check existence of the nodes
+		if(index1 == -1 || index2 == -1)
+			throw new NoSuchMovieException();
+		
+		//set every node to distance infinity and the node
+		//we are starting from to 0
+		for(int index = 0; index < movies.size(); index++){
+			if(index == index1)
+				distances[index] = 0;
+			else
+				distances[index] = Integer.MAX_VALUE;
+		}
+		
+		//start at index1
+		int currentIndex = index1;
+		int count = movies.size();
+		
+		while (currentIndex != index2 && movies.size() > 0){
+			
+			//for the current index it updates all the distances
+			for(int I : weights.get(currentIndex)){
+				int vertexToUpdate = movies.indexOf(graph.get(currentIndex).get(I));
+				
+				//if we have not yet visited the node
+				if(!visitedIndexes.contains(vertexToUpdate)){
+					int dist = distances[currentIndex]+weights.get(currentIndex).get(I);
+					
+					if(dist < distances[vertexToUpdate])
+						distances[vertexToUpdate] = dist;
+				}
+			}
+			
+			//once we visited the nodes connected to the current index
+			//we add it to visited indexes
+			visitedIndexes.add(currentIndex);
+			
+			//we want to know which node to visit next, it must have the smallest
+			//distance and not have been visited yet.
+			
+			int min = Integer.MAX_VALUE;
+			
+			for(int index = 0; index < distances.length; index++){
+				if(distances[index] < min && !visitedIndexes.contains(index)){
+					min = distances[index];
+					currentIndex = index;
+				}
+			}
+			
+			//if we are now on the final index, we read the lenght of it
+			if(currentIndex == index2)
+				length = distances[index2];
+			
+			//we have count to make sure that we do know when to stop
+			//in the case that there is no path
+			count--;
+		}
+		
+		//we can know return accordingly
+		if(length == -1)
+			throw new NoPathException();
+		else
+			return length;
 	}
 
 	/**
