@@ -116,8 +116,28 @@ public class MovieGraph {
 	 *           in the graph.
 	 */
 	public boolean addEdge(int movieId1, int movieId2, int edgeWeight) {
-		// TODO: Implement this method
-		return false;
+		int index1 = -1;
+		int index2 = -1;
+		
+		//get the indexes that represent the movie IDs
+		for(int index = 0 ; index < movies.size(); index++){
+			if(movies.get(index).hashCode() == movieId1)
+				index1 = index;
+			if(movies.get(index).hashCode() == movieId2)
+				index2 = index;
+		}
+		
+		//checks argument
+		if(index1 == index2 || index1 == -1 || index2  == -1)
+			return false;
+		
+		//adds the edge
+		graph.get(index1).add(movies.get(index2));
+		graph.get(index2).add(movies.get(index1));
+		weights.get(index1).add(edgeWeight);
+		weights.get(index2).add(edgeWeight);
+		
+		return true;
 	}
 
 	/**
