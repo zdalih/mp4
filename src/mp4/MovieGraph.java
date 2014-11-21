@@ -257,8 +257,82 @@ public class MovieGraph {
 	 */
 	public List<Movie> getShortestPath(int movieId1, int movieId2)
 			throws NoSuchMovieException, NoPathException {
-		// TODO: Implement this method
-		return null;
+		int index1 = -1;
+		int index2 = -1;
+		int[] distances = new int[movies.size()];
+		List<Integer> visitedIndexes = new ArrayList<Integer>();
+		List<Movie> moviePath =  new ArrayList<Movie>();
+		
+		//get the index of the nodes for the IDs
+		for(int index = 0 ; index < movies.size(); index++){
+			if(movies.get(index).hashCode() == movieId1)
+				index1 = index;
+			if(movies.get(index).hashCode() == movieId2)
+				index2 = index;
+		}
+		
+		//check existence of the nodes
+		if(index1 == -1 || index2 == -1)
+			throw new NoSuchMovieException();
+		
+		//set every node to distance infinity and the node
+		//we are starting from to 0
+		for(int index = 0; index < movies.size(); index++){
+			if(index == index1)
+				distances[index] = 0;
+			else
+				distances[index] = Integer.MAX_VALUE;
+		}
+		
+		//start at index1
+		int currentIndex = index1;
+		int count = movies.size();
+		
+		while (currentIndex != index2 && count > 0){
+			
+			//for the current index it updates all the distances
+			for(int I : weights.get(currentIndex)){
+				int vertexToUpdate = movies.indexOf(graph.get(currentIndex).get(I));
+				
+				//if we have not yet visited the node
+				if(!visitedIndexes.contains(vertexToUpdate)){
+					int dist = distances[currentIndex]+weights.get(currentIndex).get(I);
+					
+					if(dist < distances[vertexToUpdate])
+						distances[vertexToUpdate] = dist;
+				}
+			}
+			
+			//once we visited the nodes connected to the current index
+			//we add it to visited indexes
+			visitedIndexes.add(currentIndex);
+			
+			//we want to know which node to visit next, it must have the smallest
+			//distance and not have been visited yet.
+			
+			int min = Integer.MAX_VALUE;
+			
+			for(int index = 0; index < distances.length; index++){
+				if(distances[index] < min && !visitedIndexes.contains(index)){
+					min = distances[index];
+					currentIndex = index;
+				}
+			}
+			
+			//we have count to make sure that we do know when to stop
+			//in the case that there is no path
+			count--;
+		}
+		
+		//we have the list of visited indexes which we can convert to 
+		//a list of movies. 
+		
+		for(int I : visitedIndexes){
+			moviePath.add(movies.get(I));
+		}
+		
+		return moviePath;
+
 	}
 
 	/**
@@ -285,15 +359,43 @@ public class MovieGraph {
 	// Implement the next two methods for completeness of the MovieGraph ADT
 
 	@Override
-	public boolean equals(Object other) {
-		// TODO: Implement this
-		return false;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MovieGraph other = (MovieGraph) obj;
+		if (graph == null) {
+			if (other.graph != null)
+				return false;
+		} else if (!graph.equals(other.graph))
+			return false;
+		if (movies == null) {
+			if (other.movies != null)
+				return false;
+		} else if (!movies.equals(other.movies))
+			return false;
+		if (weights == null) {
+			if (other.weights != null)
+				return false;
+		} else if (!weights.equals(other.weights))
+			return false;
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		// TODO: Implement a reasonable hash code method
-		return 42;
+		int sum = 0;
+		for(List<Integer> L : weights){
+			for (Integer I : L)
+				sum += I;
+		}
+		
+		sum = sum*movies.size();
+		
+		return sum;
 	}
 
 }
