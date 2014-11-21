@@ -352,8 +352,31 @@ public class MovieGraph {
 	 *             if the name does not match any movie in the graph.
 	 */
 	public int getMovieId(String name) throws NoSuchMovieException {
-		// TODO: Implement this method
-		return 0;
+		int id = -1;
+		int max = 0;
+		
+		//checks for exact movie
+		for(Movie M : movies){
+			String currentName = M.getName();
+			if(name.equals(currentName))
+				id = currentName.hashCode();
+		}
+		
+		if(id != -1)
+			return id;
+		
+		//checks for title within in the movie
+		for(Movie M: movies){
+			String currentName = M.getName();
+			if(name.contains(name))
+				id = currentName.hashCode();
+				
+		}
+		
+		if(id != -1)
+			return id;
+		else 
+			throw new NoSuchMovieException();
 	}
 
 	// Implement the next two methods for completeness of the MovieGraph ADT
@@ -397,4 +420,5 @@ public class MovieGraph {
 		
 		return sum;
 	}
+}
 
