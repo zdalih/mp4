@@ -42,8 +42,92 @@ import org.junit.Test;
 public class MovieGraphTest {
 
 	@Test
-	public void test() {
+	public void addProperVertex() {
 		fail("Not yet implemented");
 	}
-
+	
+	@Test
+	public void addImporperVertex() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void addProperMovieEdge() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void addImproperMovieEdge() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void addProperIntEdge() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void addImproperIntEdge() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getShortestPathLengthProper() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getShortestPathLengthNoPath() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getShortestPathLengthNoMovie() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getShortestPathProper() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getShortestPathNoPath() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getShortestPathNoMovie() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getMovieIDProper() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void getMovieIDNoMovie() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void equals() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void notEquals() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void hashcode() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void notHashcode() {
+		fail("Not yet implemented");
+	}
 }

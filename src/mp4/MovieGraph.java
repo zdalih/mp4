@@ -1,8 +1,8 @@
 package mp4;
 
+import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Implement this class that represents an undirected graph with movies as vertices.
 // The edges are weighted.
 // This graph should be immutable except for the addition of vertices and edges. 
 // It should not be possible to change a vertex after it has been added to the graph.
@@ -10,6 +10,23 @@ import java.util.List;
 // You should indicate what the representation invariants and the abstraction function are for the representation you choose.
 
 public class MovieGraph {
+	
+	//RI: The ith position of the movies List always represents the movie
+	//in the ith node on the graph List. IF a node has an edge towards another
+	//node, then the other node has a node towards the node. The list of edge is 
+	//always in sync with the list of weights at any node. meaning that the ith weight
+	//of the ith node is the weight of the ith edge of the ith node. 
+	//
+	//AF: The list movie is a list where each index of the list represents the position of 
+	//the movie that is in graph and lists. At each position on those two list is a list. The lists 
+	//in graph represents the movies connected to this node and the list in weights represents the
+	//weight of each edge
+	
+	List<List<Movie>> graph = new ArrayList<List<Movie>>();
+	List<List<Integer>> weights = new ArrayList<List<Integer>>();
+	List<Movie> movies = new ArrayList<Movie>();
+	
+
 
 	/**
 	 * Add a new movie to the graph. If the movie already exists in the graph
@@ -23,8 +40,21 @@ public class MovieGraph {
 	 *           exist in the graph.
 	 */
 	public boolean addVertex(Movie movie) {
-		// TODO: Implement this method
-		return false;
+		
+		//checks if the movie is on the graph
+		
+		for(int index = 0; index < movies.size(); index++){
+			if(movies.contains(movie))
+				return false;
+		}
+		
+		//adds movie to the the graph by adding it to the list of
+		//movies and creating a node to represent it
+		
+		movies.add(movie);
+		graph.add(new ArrayList<Movie>());
+		
+		return true;
 	}
 
 	/**
@@ -46,8 +76,24 @@ public class MovieGraph {
 	 *           in the graph.
 	 */
 	public boolean addEdge(Movie movie1, Movie movie2, int edgeWeight) {
-		// TODO: Implement this method
-		return false;
+		int index1 = movies.indexOf(movie1);
+		int index2 = movies.indexOf(movie2);
+		
+		//checks if argument is valid
+		if(graph.get(index1).contains(movie2))
+			return false;
+		if(graph.get(index2).contains(movie1))
+			return false;
+		if(movie1.equals(movie2))
+			return false;
+		
+		//adds the edge
+		graph.get(index1).add(movie2);
+		graph.get(index2).add(movie1);
+		weights.get(index1).add(edgeWeight);
+		weights.get(index2).add(edgeWeight);
+		
+		return true;
 	}
 
 	/**
