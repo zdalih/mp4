@@ -4,13 +4,11 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 // TODO: You should implement suitable JUnit tests to verify that your implementation of the MovieGraph class is correct.
 
@@ -175,7 +173,6 @@ public class MovieGraphTest {
 		int result = edgeWeight(alphaMovie,betaMovie);
 		int expected = 2;
 		assertEquals(result,expected);
-		System.out.println(edgeWeight(deltaMovie, echoMovie));
 		}
 	
 	@Test
@@ -302,10 +299,37 @@ public class MovieGraphTest {
 	}
 	
 	@Test
-	public void getShortestPathLengthProper() throws NoSuchMovieException, NoPathException {
-		MovieGraph graph = new MovieGraph();
+	public void getShortestPathLengthAB() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
 		int length = graph.getShortestPathLength(alphaMovie.hashCode(), betaMovie.hashCode());
-		int expected = 1;
+		int expected = 2;
+		
+		assertEquals(length,expected);	
+		}
+	
+	@Test
+	public void getShortestPathLengthAC() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
+		int length = graph.getShortestPathLength(alphaMovie.hashCode(), charlieMovie.hashCode());
+		int expected = 2;
+		
+		assertEquals(length,expected);	
+		}
+	
+	@Test
+	public void getShortestPathLengthBC() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
+		int length = graph.getShortestPathLength(betaMovie.hashCode(), charlieMovie.hashCode());
+		int expected = 3;
+		
+		assertEquals(length,expected);	
+		}
+	
+	@Test
+	public void getShortestPathLengthDE() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
+		int length = graph.getShortestPathLength(deltaMovie.hashCode(), echoMovie.hashCode());
+		int expected = 2;
 		
 		assertEquals(length,expected);	
 		}
@@ -341,20 +365,70 @@ public class MovieGraphTest {
 		} catch (NoPathException e) {
 			fail();
 		}
+		
 	}
 	
 	@Test
-	public void getShortestPathProper() throws NoSuchMovieException, NoPathException {
-		MovieGraph graph = new MovieGraph();
+	public void getShortestPathAB() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
 		ArrayList<Movie> path = new ArrayList<Movie>();
+		ArrayList<Movie> expected1 = new ArrayList<Movie>(Arrays.asList(alphaMovie,betaMovie));
+		ArrayList<Movie> expected2 = new ArrayList<Movie>(Arrays.asList(alphaMovie,deltaMovie,betaMovie));
+		
 		path = (ArrayList<Movie>) graph.getShortestPath(alphaMovie.hashCode(), betaMovie.hashCode());
 		
-		ArrayList expected = new ArrayList();
-		expected.add(alphaMovie);//still need to find the correct path
-		assertEquals(path,expected);
+		if( path.equals(expected1) || path.equals(expected2))
+			assertTrue(true);
+		else
+			fail();
 		
 	}
 	
+	@Test
+	public void getShortestPathAC() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
+		ArrayList<Movie> path = new ArrayList<Movie>();
+		ArrayList<Movie> expected = new ArrayList<Movie>(Arrays.asList(alphaMovie,echoMovie,charlieMovie));
+		
+		path = (ArrayList<Movie>) graph.getShortestPath(alphaMovie.hashCode(),charlieMovie.hashCode());
+		
+		if( path.equals(expected))
+			assertTrue(true);
+		else
+			fail();
+		
+	}
+	
+	@Test
+	public void getShortestPathBC() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
+		ArrayList<Movie> path = new ArrayList<Movie>();
+		ArrayList<Movie> expected1 = new ArrayList<Movie>(Arrays.asList(betaMovie,echoMovie,charlieMovie));
+		ArrayList<Movie> expected2 = new ArrayList<Movie>(Arrays.asList(betaMovie,deltaMovie,charlieMovie));
+		
+		path = (ArrayList<Movie>) graph.getShortestPath(betaMovie.hashCode(), charlieMovie.hashCode());
+		
+		if( path.equals(expected1) || path.equals(expected2))
+			assertTrue(true);
+		else
+			fail();
+		
+	}
+	
+	@Test
+	public void getShortestPathDE() throws NoSuchMovieException, NoPathException, IOException {
+		MovieGraph graph = createGraph();
+		ArrayList<Movie> path = new ArrayList<Movie>();
+		ArrayList<Movie> expected = new ArrayList<Movie>(Arrays.asList(deltaMovie,alphaMovie,echoMovie));
+		
+		path = (ArrayList<Movie>) graph.getShortestPath(deltaMovie.hashCode(), echoMovie.hashCode());
+		
+		if( path.equals(expected))
+			assertTrue(true);
+		else
+			fail();
+		
+	}
 	@Test
 	public void getShortestPathNoPath() throws IOException {
 		fail();//out of memory error
