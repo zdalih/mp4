@@ -10,6 +10,8 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
 // TODO: You should implement suitable JUnit tests to verify that your implementation of the MovieGraph class is correct.
 
 /*
@@ -173,7 +175,8 @@ public class MovieGraphTest {
 		int result = edgeWeight(alphaMovie,betaMovie);
 		int expected = 2;
 		assertEquals(result,expected);
-	}
+		System.out.println(edgeWeight(deltaMovie, echoMovie));
+		}
 	
 	@Test
 	public void betaCharlieWeight() throws IOException{
@@ -299,9 +302,13 @@ public class MovieGraphTest {
 	}
 	
 	@Test
-	public void getShortestPathLengthProper() {
-		fail("Not yet implemented");
-	}
+	public void getShortestPathLengthProper() throws NoSuchMovieException, NoPathException {
+		MovieGraph graph = new MovieGraph();
+		int length = graph.getShortestPathLength(alphaMovie.hashCode(), betaMovie.hashCode());
+		int expected = 1;
+		
+		assertEquals(length,expected);	
+		}
 	
 	@Test
 	public void getShortestPathLengthNoPath() throws IOException {
@@ -321,7 +328,6 @@ public class MovieGraphTest {
 		} catch (NoPathException e) {
 			assertTrue(true);
 		}
-		
 	}
 	
 	@Test
@@ -335,12 +341,18 @@ public class MovieGraphTest {
 		} catch (NoPathException e) {
 			fail();
 		}
-		
 	}
 	
 	@Test
-	public void getShortestPathProper() {
-		fail("Not yet implemented");
+	public void getShortestPathProper() throws NoSuchMovieException, NoPathException {
+		MovieGraph graph = new MovieGraph();
+		ArrayList<Movie> path = new ArrayList<Movie>();
+		path = (ArrayList<Movie>) graph.getShortestPath(alphaMovie.hashCode(), betaMovie.hashCode());
+		
+		ArrayList expected = new ArrayList();
+		expected.add(alphaMovie);//still need to find the correct path
+		assertEquals(path,expected);
+		
 	}
 	
 	@Test
@@ -378,13 +390,21 @@ public class MovieGraphTest {
 	}
 	
 	@Test
-	public void getMovieIDProper() {
-		fail("Not yet implemented");
+	public void getMovieIDProper() throws NoSuchMovieException, IOException {
+		MovieGraph graph = createGraph();
+		int result = graph.getMovieId("beta");
+		assertTrue(result == 2);
 	}
 	
 	@Test
-	public void getMovieIDNoMovie() {
-		fail("Not yet implemented");
+	public void getMovieIDNoMovie() throws IOException {
+		MovieGraph graph = createGraph();
+		try {
+			graph.getMovieId("foxtrot");
+			fail();
+		} catch (NoSuchMovieException e) {
+			assertTrue(true);
+		}
 	}
 	
 	@Test

@@ -387,19 +387,22 @@ public class MovieGraph {
 		for(Movie M : movies){
 			String currentName = M.getName();
 			if(name.equals(currentName))
-				id = currentName.hashCode();
+				id = M.hashCode();
 		}
 		
 		if(id != -1)
 			return id;
-		
+	/*	//The spec says returnthe id movie corresponding to name,
+	 *	//There could be a movie called "The" that exists, but if "The"
+	 *	//does exist in our graph we migh return another movie.
+	 *
 		//checks for title within in the movie
 		for(Movie M: movies){
 			String currentName = M.getName();
-			if(name.contains(name))
-				id = currentName.hashCode();
-				
+			if(currentName.contains(name))
+				id = M.hashCode();		
 		}
+	*/
 		
 		if(id != -1)
 			return id;
