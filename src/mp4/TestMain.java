@@ -11,14 +11,12 @@ public class TestMain {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		System.out.println("The list of movies");
 		MovieIterator iter = new MovieIterator("data/u.item.txt");
 		while ( iter.hasNext() ) {
 			Movie movie = iter.getNext();
 			System.out.println(movie.getName());
 		}
 		
-		System.out.println("----------------");
 		
 		System.out.println("The list of ratings");
 		RatingIterator iter2 = new RatingIterator("data/u.data.txt");

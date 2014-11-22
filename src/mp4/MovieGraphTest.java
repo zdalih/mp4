@@ -8,7 +8,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 // TODO: You should implement suitable JUnit tests to verify that your implementation of the MovieGraph class is correct.
 
@@ -59,7 +62,7 @@ public class MovieGraphTest {
 	 * @return Integer value of edge weight between the two movies
 	 * @throws IOException
 	 */
-	public int edgeWeight( Movie first, Movie second ) throws IOException {
+	public static int edgeWeight( Movie first, Movie second ) throws IOException {
 		int firstID = first.hashCode(); //Hashcode returns a movie ID
 		int secondID = second.hashCode();
 		Set <Integer> firstLikerIds = new HashSet<Integer>();
