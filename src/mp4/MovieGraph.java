@@ -199,7 +199,7 @@ public class MovieGraph {
 		int currentIndex = index1;
 		int count = movies.size();
 		
-		while (currentIndex != index2 && movies.size() > 0){
+		while (currentIndex != index2 && count > 0){
 			
 			//for the current index it updates all the distances
 			for(Movie M : graph.get(currentIndex)){
@@ -270,6 +270,13 @@ public class MovieGraph {
 		int[] distances = new int[movies.size()];
 		List<Integer> visitedIndexes = new ArrayList<Integer>();
 		List<Movie> moviePath =  new ArrayList<Movie>();
+		
+		//checks if such a path exists
+		try{
+			this.getShortestPathLength(movieId1, movieId2);
+		} catch(Exception e){
+			throw new NoPathException();
+		}
 		
 		//get the index of the nodes for the IDs
 		for(int index = 0 ; index < movies.size(); index++){
@@ -370,7 +377,11 @@ public class MovieGraph {
 		for(int I : result)
 			moviePath.add(movies.get(I));
 		
-		return moviePath;
+		
+		if(moviePath.isEmpty())
+			throw new NoPathException();
+		else
+			return moviePath;
 
 	}
 

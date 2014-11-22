@@ -336,7 +336,6 @@ public class MovieGraphTest {
 	
 	@Test
 	public void getShortestPathLengthNoPath() throws IOException {
-		fail(); //out of memory error
 		MovieGraph graph = new MovieGraph();
 		graph.addVertex(alphaMovie);
 		graph.addVertex(betaMovie);
