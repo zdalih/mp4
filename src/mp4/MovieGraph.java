@@ -143,12 +143,6 @@ public class MovieGraph {
 		if(graph.get(index2).contains(movie1))
 			return false;
 		
-		//checks for repeated edges
-		//if(graph.get(index1) == movies.get(index2) && graph.get(index2) == movies.get(index1) ){
-		//	if(weights.get(index1).equals(edgeWeight))
-		//		return false;
-		//}
-		
 		//adds the edge
 		graph.get(index1).add(movies.get(index2));
 		graph.get(index2).add(movies.get(index1));

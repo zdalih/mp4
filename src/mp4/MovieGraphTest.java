@@ -73,12 +73,12 @@ public class MovieGraphTest {
 		int totalReviewers = 0;
 		int edgeWeight;
 		
-		RatingIterator iter2 = new RatingIterator("data/u.simpleData.txt");
+		RatingIterator iter2 = new RatingIterator("data/u.simpleData.txt"); //iterate through the simple Data
 		while (iter2.hasNext()) {
 			
 			Rating rating = iter2.getNext();
 			
-			if(rating.getMovieId() == firstID){
+			if(rating.getMovieId() == firstID){ 
 				firstMovieRaters.add(rating.getUserId());
 				if(rating.getRating() < 3)
 					firstDislikerIds.add(rating.getUserId());//if the user does not like the movie add user to first disliker set
@@ -124,6 +124,7 @@ public class MovieGraphTest {
 			}		
 		}
 		
+		//the expression given us to find edge weight
 		edgeWeight = 1 + totalReviewers - (likerIntersectionSize + dislikerIntersectionSize);
 		
 		return edgeWeight;
@@ -134,12 +135,14 @@ public class MovieGraphTest {
 		
 		MovieGraph completeGraph = new MovieGraph();
 		
+		//create movies
 		Movie alphaMovie = new Movie(1,"alpha",2001,"www.alpha.com");
 		Movie betaMovie = new Movie(2,"beta",2002,"www.beta.com");
 		Movie charlieMovie = new Movie(3,"charlie",2003,"www.charlie.com");
 		Movie deltaMovie = new Movie(4,"delta",2004,"www.delta.com");
 		Movie echoMovie = new Movie(5,"echo",2005,"www.echo.com");
 		
+		//create vertexes for the movies
 		completeGraph.addVertex(alphaMovie);
 		completeGraph.addVertex(betaMovie);
 		completeGraph.addVertex(charlieMovie);
@@ -170,7 +173,7 @@ public class MovieGraphTest {
 	
 	@Test
 	public void alphaBetaWeight() throws IOException{
-		int result = edgeWeight(alphaMovie,betaMovie);
+		int result = edgeWeight(alphaMovie,betaMovie); //find edgeWeight and verify
 		int expected = 2;
 		assertEquals(result,expected);
 		}
@@ -209,11 +212,12 @@ public class MovieGraphTest {
 	@Test
 	public void addProperMovieEdge() throws IOException{
 		MovieGraph graph = new MovieGraph();
-		graph.addVertex(alphaMovie);
+		graph.addVertex(alphaMovie); //add vertexes
 		graph.addVertex(charlieMovie);
 		
-		boolean result = graph.addEdge((Movie)alphaMovie,(Movie)charlieMovie, edgeWeight(alphaMovie,charlieMovie));
+		boolean result = graph.addEdge((Movie)alphaMovie,(Movie)charlieMovie, edgeWeight(alphaMovie,charlieMovie)); //create an edge
 		
+		//verify if the edge is correct by checking weight and movies
 		if(graph.movies.get(0).equals(alphaMovie) && graph.movies.get(1).equals(charlieMovie)){
 			if( graph.weights.get(1).get(0) == edgeWeight(alphaMovie,charlieMovie))
 				assertTrue(result);
@@ -229,8 +233,8 @@ public class MovieGraphTest {
 		graph.addVertex(charlieMovie);
 		
 		graph.addEdge(alphaMovie,charlieMovie, edgeWeight(alphaMovie,charlieMovie));
-		boolean result = graph.addEdge(alphaMovie,charlieMovie, edgeWeight(alphaMovie,charlieMovie));
-		
+		boolean result = graph.addEdge(alphaMovie,charlieMovie, edgeWeight(alphaMovie,charlieMovie)); 
+		//adding the same edge twice should return false
 		assertFalse(result);
 	}
 	
@@ -241,7 +245,7 @@ public class MovieGraphTest {
 		graph.addVertex(echoMovie);
 		
 		boolean result = graph.addEdge(deltaMovie.hashCode(),echoMovie.hashCode(), edgeWeight(deltaMovie,echoMovie));
-		
+		//verify if the edge is correct by checking weight and movies
 		if(graph.movies.get(0).equals(deltaMovie) && graph.movies.get(1).equals(echoMovie)){
 			if( graph.weights.get(1).get(0) == edgeWeight(deltaMovie,echoMovie))
 				assertTrue(result);
@@ -258,7 +262,7 @@ public class MovieGraphTest {
 		
 		graph.addEdge(alphaMovie.hashCode(),betaMovie.hashCode(), edgeWeight(alphaMovie,betaMovie));
 		boolean result = graph.addEdge(alphaMovie.hashCode(),betaMovie.hashCode(), edgeWeight(alphaMovie,betaMovie));
-		
+		//adding the same edge twice should return false
 		assertFalse(result);
 	}
 	
@@ -303,6 +307,7 @@ public class MovieGraphTest {
 		MovieGraph graph = createGraph();
 		int length = graph.getShortestPathLength(alphaMovie.hashCode(), betaMovie.hashCode());
 		int expected = 2;
+		//find shortest length and compare with the expected value
 		
 		assertEquals(length,expected);	
 		}
@@ -342,14 +347,14 @@ public class MovieGraphTest {
 		graph.addVertex(charlieMovie);
 		
 		graph.addEdge(alphaMovie, betaMovie, edgeWeight(alphaMovie,betaMovie));
-	
+		
 		try {
 			graph.getShortestPathLength(alphaMovie.hashCode(), charlieMovie.hashCode());
-			fail();
+			fail();//exception should have been caught
 		} catch (NoSuchMovieException e) {
-			fail();
+			fail(); //wrong exception
 		} catch (NoPathException e) {
-			assertTrue(true);
+			assertTrue(true); //caught exception, good!
 		}
 	}
 	
@@ -358,11 +363,11 @@ public class MovieGraphTest {
 		MovieGraph graph = new MovieGraph();
 		try {
 			graph.getShortestPathLength(alphaMovie.hashCode(), betaMovie.hashCode());
-			fail();
+			fail();//exception should have been caught
 		} catch (NoSuchMovieException e) {
-			assertTrue(true);
+			assertTrue(true);//exception caught
 		} catch (NoPathException e) {
-			fail();
+			fail(); //wrong exception
 		}
 		
 	}
@@ -371,13 +376,13 @@ public class MovieGraphTest {
 	public void getShortestPathAB() throws NoSuchMovieException, NoPathException, IOException {
 		MovieGraph graph = createGraph();
 		ArrayList<Movie> path = new ArrayList<Movie>();
-		ArrayList<Movie> expected1 = new ArrayList<Movie>(Arrays.asList(alphaMovie,betaMovie));
+		ArrayList<Movie> expected1 = new ArrayList<Movie>(Arrays.asList(alphaMovie,betaMovie)); //expected outputs of the shortest path method
 		ArrayList<Movie> expected2 = new ArrayList<Movie>(Arrays.asList(alphaMovie,deltaMovie,betaMovie));
 		
-		path = (ArrayList<Movie>) graph.getShortestPath(alphaMovie.hashCode(), betaMovie.hashCode());
+		path = (ArrayList<Movie>) graph.getShortestPath(alphaMovie.hashCode(), betaMovie.hashCode()); //find the path
 		
 		if( path.equals(expected1) || path.equals(expected2))
-			assertTrue(true);
+			assertTrue(true); //test if path returned resembles either of the solutions
 		else
 			fail();
 		
@@ -438,12 +443,12 @@ public class MovieGraphTest {
 		graph.addEdge(alphaMovie, betaMovie, edgeWeight(alphaMovie,betaMovie));
 	
 		try {
-			graph.getShortestPath(alphaMovie.hashCode(), charlieMovie.hashCode());
-			fail();
+			graph.getShortestPath(alphaMovie.hashCode(), charlieMovie.hashCode()); //there is no edge between the two movies
+			fail();//should have caught exception
 		} catch (NoSuchMovieException e) {
-			fail();
+			fail();//wrong exception
 		} catch (NoPathException e) {
-			assertTrue(true);
+			assertTrue(true);//exception caught
 		}
 	
 	}
@@ -453,19 +458,19 @@ public class MovieGraphTest {
 		MovieGraph graph = new MovieGraph();
 		try {
 			graph.getShortestPathLength(alphaMovie.hashCode(), betaMovie.hashCode());
-			fail();
+			fail(); //should have caught exception
 		} catch (NoSuchMovieException e) {
-			assertTrue(true);
+			assertTrue(true);//exception caught
 		} catch (NoPathException e) {
-			fail();
+			fail();//wrong exception
 		}
 	}
 	
 	@Test
 	public void getMovieIDProper() throws NoSuchMovieException, IOException {
-		MovieGraph graph = createGraph();
-		int result = graph.getMovieId("beta");
-		assertTrue(result == 2);
+		MovieGraph graph = createGraph(); 
+		int result = graph.getMovieId("beta"); //find id of movie called beta
+		assertTrue(result == 2); //see if id returned is correct
 	}
 	
 	@Test
@@ -473,17 +478,17 @@ public class MovieGraphTest {
 		MovieGraph graph = createGraph();
 		try {
 			graph.getMovieId("foxtrot");
-			fail();
+			fail();//should have caught exception
 		} catch (NoSuchMovieException e) {
-			assertTrue(true);
+			assertTrue(true);//exception caught
 		}
 	}
 	
 	@Test
 	public void equals() throws IOException {
-		MovieGraph first = createGraph();
+		MovieGraph first = createGraph();//create two identical graphs
 		MovieGraph second = createGraph();
-		assertTrue(first.equals(second));
+		assertTrue(first.equals(second));//see if they are equal
 	}
 	
 	@Test
@@ -491,14 +496,14 @@ public class MovieGraphTest {
 		MovieGraph first = createGraph();
 		MovieGraph second = createGraph();
 		Movie additional = new Movie(1,"additional",2,"www.add.com");
-		second.addVertex(additional);
-		assertFalse(first.equals(second));
+		second.addVertex(additional);//add an additional vertex to a graph
+		assertFalse(first.equals(second)); //should not be equal
 	}
 	
 	@Test
 	public void hashcode() throws IOException {
 		MovieGraph first = createGraph();
-		MovieGraph second = createGraph();
+		MovieGraph second = createGraph();//create equal graphs and check hashcode
 		assertTrue(first.hashCode() == second.hashCode());
 	}
 	
@@ -507,7 +512,7 @@ public class MovieGraphTest {
 		MovieGraph first = createGraph();
 		MovieGraph second = createGraph();
 		Movie additional = new Movie(1,"additional",2,"www.add.com");
-		second.addVertex(additional);
+		second.addVertex(additional);//added vertex, so hashcodes should be different
 		assertFalse(first.hashCode() == second.hashCode());
 	}
 }
