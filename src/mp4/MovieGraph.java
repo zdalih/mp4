@@ -120,17 +120,27 @@ public class MovieGraph {
 	public boolean addEdge(int movieId1, int movieId2, int edgeWeight) {
 		int index1 = -1;
 		int index2 = -1;
+		Movie movie1 = null;
+		Movie movie2 = null;
 		
 		//get the indexes that represent the movie IDs
 		for(int index = 0 ; index < movies.size(); index++){
-			if(movies.get(index).hashCode() == movieId1)
+			if(movies.get(index).hashCode() == movieId1){
 				index1 = index;
-			if(movies.get(index).hashCode() == movieId2)
+				movie1 = movies.get(index1);
+			}
+			if(movies.get(index).hashCode() == movieId2){
 				index2 = index;
+				movie2 = movies.get(index2);
+			}
 		}
 		
 		//checks argument
 		if(index1 == index2 || index1 == -1 || index2  == -1)
+			return false;
+		if(graph.get(index1).contains(movie2))
+			return false;
+		if(graph.get(index2).contains(movie1))
 			return false;
 		
 		//checks for repeated edges
