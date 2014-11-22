@@ -269,11 +269,11 @@ public class MovieGraphTest {
 	@Test
 	public void getShortestPathLengthProperV1() throws NoSuchMovieException, NoPathException {
 		MovieGraph graph = new MovieGraph();
-		Movie A = new Movie(0, "A", 2010, "http:://www.imdb.com");
-		Movie B = new Movie(1, "B", 2010, "http:://www.imdb.com");
-		Movie C = new Movie(2, "C", 2010, "http:://www.imdb.com");
-		Movie D = new Movie(3, "D", 2010, "http:://www.imdb.com");
-		Movie E = new Movie(4, "E", 2010, "http:://www.imdb.com");
+		Movie A = new Movie(1, "A", 2010, "http:://www.imdb.com");
+		Movie B = new Movie(2, "B", 2010, "http:://www.imdb.com");
+		Movie C = new Movie(3, "C", 2010, "http:://www.imdb.com");
+		Movie D = new Movie(4, "D", 2010, "http:://www.imdb.com");
+		Movie E = new Movie(5, "E", 2010, "http:://www.imdb.com");
 		
 		graph.addVertex(A);
 		graph.addVertex(B);
@@ -290,7 +290,7 @@ public class MovieGraphTest {
 		
 		int result = graph.getShortestPathLength(1, 4);
 		ArrayList<Movie> path = new ArrayList<Movie>();
-		path = (ArrayList<Movie>) graph.getShortestPath(3, 0);
+		path = (ArrayList<Movie>) graph.getShortestPath(4, 1);
 		
 		String pathString =  new String("");
 		

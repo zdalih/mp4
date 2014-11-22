@@ -3,6 +3,7 @@ package mp4;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 // The edges are weighted.
 // This graph should be immutable except for the addition of vertices and edges. 
@@ -142,6 +143,12 @@ public class MovieGraph {
 			return false;
 		if(graph.get(index2).contains(movie1))
 			return false;
+		
+		//checks for repeated edges
+		//if(graph.get(index1) == movies.get(index2) && graph.get(index2) == movies.get(index1) ){
+		//	if(weights.get(index1).equals(edgeWeight))
+		//		return false;
+		//}
 		
 		//adds the edge
 		graph.get(index1).add(movies.get(index2));
@@ -345,48 +352,67 @@ public class MovieGraph {
 		
 		visitedIndexes.add(index2);
 		
-		//we now want the shortest path we do this by shorting the distances array
-		//we sort the indexes accordingly.
-		
-		int indexAt = index1;
+		int[] visitedIndexesArray =  new int[visitedIndexes.size()];
 		List<Integer> result = new ArrayList<Integer>();
+		boolean invalidPath = true;
+		boolean lastIsEnd = false;
+		int lastIndex = 0;
+		
+		for(int index = 0 ; index < visitedIndexes.size(); index++)
+			visitedIndexesArray[index] = visitedIndexes.get(index);
 	
-		while(indexAt != index2){
-			List<Integer> possiblePaths =  new ArrayList<Integer>();
-			int min = Integer.MAX_VALUE;
-
-			for(int I : visitedIndexes){
-				if(!result.contains(I) && graph.get(indexAt).contains(movies.get(I))){
-					possiblePaths.add(I);
-				}
-			}
-			result.add(indexAt);
-			
-			for(int I : possiblePaths){
-				if(index2 == I){
-					result.add(index2);
-					indexAt = index2;
-				}
-			}
-			
-			for(int I : possiblePaths){
-				if(distances[I] < min && !result.contains(I) && indexAt != index2){
-					indexAt = I;
-					min = distances[I];
-				}
-			}
+		while(invalidPath){
+			int sum = 0;
+			//Randomly sets our set of array
+			  int n = visitedIndexesArray.length;
+			  Random random = new Random();
+			  random.nextInt();
+			  for (int i = 0; i < n; i++) {
+				  int change = i + random.nextInt(n - i);
+				  swap(visitedIndexesArray, i, change);
+			  }
+			 //we now try to calculate the path length of this array
+			 //we should eventualy get to a valid path
+			  
+			  for(int index = 0 ; index < visitedIndexesArray.length-1; index++){
+				  //we get the weigth of the current index to the next one
+				  List<Integer> weightList = weights.get(visitedIndexesArray[index]);
+				  Movie nextMovieOnPath = this.movies.get(visitedIndexesArray[index+1]);
+				  int weightIndex = graph.get(visitedIndexesArray[index]).indexOf(nextMovieOnPath);
+				  //sum it up
+				  try{
+					  sum += weightList.get(weightIndex);
+				  } catch(Exception E){}
+				  
+				  //check if the next is the last node (index2)
+				  if(visitedIndexesArray[index+1] == index2){
+					  lastIsEnd = true;
+					  lastIndex = index+1;
+					  break;
+				  }
+			  }
+			  
+			  //we check if its a correct path
+			  if(sum == this.getShortestPathLength(movieId1, movieId2) && lastIsEnd
+					  && visitedIndexesArray[0] == index1)
+				  invalidPath = false;
 		}
 		
+		//we can know create our result
+		
+		for(int index = 0; index <= lastIndex; index++)
+			result.add(visitedIndexesArray[index]);
+	
+			
 		//we convert indexes to movies 
 		for(int I : result)
 			moviePath.add(movies.get(I));
-		
-		
+				
+				
 		if(moviePath.isEmpty())
 			throw new NoPathException();
 		else
 			return moviePath;
-
 	}
 
 	/**
@@ -477,5 +503,11 @@ public class MovieGraph {
 		
 		return sum;
 	}
+	
+	  private static void swap(int[] a, int i, int change) {
+		    int helper = a[i];
+		    a[i] = a[change];
+		    a[change] = helper;
+		  }
 
 }
