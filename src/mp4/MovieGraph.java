@@ -1,6 +1,7 @@
 package mp4;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 // The edges are weighted.
@@ -331,38 +332,42 @@ public class MovieGraph {
 			count--;
 		}
 		
-		//we sort the indexes and the distances with respect to the distance shortest distance
-		//and they must also be visited
+		visitedIndexes.add(index2);
 		
-		int[] moviesIndexSorted = new int[visitedIndexes.size()];
-		int[] remaining = distances.clone();
-		int toAdd = 0;
+		//we now want the shortest path we do this by shorting the distances array
+		//we sort the indexes accordingly.
 		
-		for(count = 0 ; count < visitedIndexes.size(); count++){
+		int indexAt = index1;
+		List<Integer> result = new ArrayList<Integer>();
+	
+		while(indexAt != index2){
+			List<Integer> possiblePaths =  new ArrayList<Integer>();
 			int min = Integer.MAX_VALUE;
+
+			for(int I : visitedIndexes){
+				if(!result.contains(I) && graph.get(indexAt).contains(movies.get(I))){
+					possiblePaths.add(I);
+				}
+			}
+			result.add(indexAt);
 			
-			//find the smallest of the remaining
-			for(int index = 0; index < remaining.length; index++){
-				if(remaining[index] < min){
-					min = remaining[index];
-					toAdd = index;
+			for(int I : possiblePaths){
+				if(index2 == I){
+					result.add(index2);
+					indexAt = index2;
 				}
 			}
 			
-			moviesIndexSorted[count] = toAdd;
-			
-			if(distances[count] == this.getShortestPathLength(movieId1, movieId2)){
-				moviesIndexSorted[count] = index2;
-				break;
+			for(int I : possiblePaths){
+				if(distances[I] < min && !result.contains(I) && indexAt != index2){
+					indexAt = I;
+					min = distances[I];
+				}
 			}
-			
-			remaining[toAdd] = Integer.MAX_VALUE;
 		}
 		
-		
-		//we now convert this matrix into movie for
-		
-		for(int I : moviesIndexSorted)
+		//we convert indexes to movies 
+		for(int I : result)
 			moviePath.add(movies.get(I));
 		
 		return moviePath;
